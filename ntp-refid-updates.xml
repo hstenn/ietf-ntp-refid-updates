@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced. 
+     An alternate method (rfc include) is described in the references. -->
+<!ENTITY RFC5905 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5905.xml">
+<!ENTITY RFC2827 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2827.xml">
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC2434 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2434.xml">
+<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+<!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs), 
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space 
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="std" docName="draft-ietf-ntp-refid-updates-00" ipr="trust200902">
+  <!-- category values: std, bcp, info, exp, and historic
+     ipr values: full3667, noModification3667, noDerivatives3667
+     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+     they will automatically be output with "(if approved)" -->
+
+  <!-- ***** FRONT MATTER ***** -->
+
+  <front>
+    <!-- The abbreviated title is used in the page header - it is only necessary if the 
+         full title is longer than 39 characters -->
+
+    <title abbrev="Network Time Protocol REFID Updates">Network Time
+    Protocol REFID Updates</title>
+
+    <!-- add 'role="editor"' below for the editors if appropriate -->
+
+    <!-- Another author who claims to be an editor -->
+
+    <author fullname="Harlan Stenn" initials="H." surname="Stenn">
+      <organization>Network Time Foundation</organization>
+
+      <address>
+        <postal>
+          <street>P.O. Box 918</street>
+
+          <!-- Reorder these if your country does things differently -->
+
+          <city>Talent, OR</city>
+
+          <region/>
+
+          <code>97540</code>
+
+          <country>US</country>
+        </postal>
+
+        <phone/>
+
+        <email>stenn@nwtime.org</email>
+
+        <!-- uri and facsimile elements may also be added -->
+      </address>
+    </author>
+
+    <!--
+    <author fullname="Sharon Goldberg" initials="S." surname="Goldberg">
+      <organization>Boston University</organization>
+
+      <address>
+        <postal>
+          <street>111 Cummington St</street>
+
+          <city>Boston, MA</city>
+
+          <region/>
+
+          <code>02215</code>
+
+          <country>US</country>
+        </postal>
+
+        <phone/>
+
+        <email>goldbe@cs.bu.edu</email>
+
+      </address>
+    </author>
+    -->
+
+<!-- other authors -->
+
+    <date month="November" year="2016"/>
+
+    <!-- If the month and year are both specified and are the current ones,
+         xml2rfc will fill in the current day for you. If only the current
+         year is specified, xml2rfc will fill in the current day and month
+         for you. If the year is not the current one, it is necessary to
+         specify at least a month (xml2rfc assumes day="1" if not specified
+         for the purpose of calculating the expiry date).  With drafts it is
+         normally sufficient to specify just the year. -->
+
+    <!-- Meta-data Declarations -->
+
+    <area>General</area>
+
+    <workgroup>Internet Engineering Task Force</workgroup>
+
+    <!-- WG name at the upperleft corner of the doc,
+         IETF is fine for individual submissions.  
+	 If this element is not present, the default is "Network Working
+         Group", which is used by the RFC Editor as a nod to the history of
+         the IETF. -->
+
+    <keyword>NTP</keyword>
+
+    <!-- Keywords will be incorporated into HTML output
+         files in a meta tag but they have no effect on text or nroff
+         output. If you submit your draft to the RFC Editor, the
+         keywords will be used for the search engine. -->
+
+    <abstract>
+      <t><xref target="RFC5905">RFC 5905</xref>, section 7.3, "Packet Header
+      Variables", defines the value of the REFID, the system peer for the
+      responding host.  In the past, for IPv4 associations the IPv4 address
+      is used, and for IPv6 associations four octets of the MD5 hash of the
+      IPv6 are used.  There are at least three shortcomings to this
+      approach, and this proposal will address the three so noted.  One is
+      that knowledge of the system peer is "abusable" information and should
+      not be generally available.  The second is that the four octet hash of
+      the IPv6 address looks very much like an IPv4 address, and this is
+      confusing.  The third is that a growing number of low-stratum servers
+      want to offer leap-smeared time to their clients, and there is no
+      obvious way to know if a server is offering accurate time or
+      leap-smeared time.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <section title="The REFID">
+	<t>The interpretation of a REFID is based on the stratum, as
+	  documented in <xref target="RFC5905">RFC 5905</xref>, section 7.3,
+	  "Packet Header Variables". The core reason for the REFID in the
+	  NTP Protocol is to prevent a degree-one timing loop, where server
+	  B decides to follow A as its time source, and A then decides to
+	  follow B as its time source.</t>
+      
+	<t>At Stratum 2+, which will be the case if two servers A and B are
+	  exchanging timing information, then if server B follows A as its
+	  time source, A's address will be B's REFID.  When A uses IPv4, the
+	  default REFID is A's IPv4 address.  When A uses IPv6, the default
+	  REFID is a four-octet digest of A's IPv6 address.  Now, if A
+	  queries B for its time, then A will learn that B is using A as its
+	  time source by observing A's address in the REFID field of the
+	  response packet sent by B.  Thus, A will not select B as a
+	  potential time source, since this would cause a timing loop.</t>
+      
+	<t>However, this mechanism also allows a third-party C to learn that
+	  A is the time source that is being used by B.  When A is using
+	  IPv4, C can learn this by querying B for its time, and observing
+	  that the REFID in B's response is the IPv4 address of A.
+	  Meanwhile, when A is using IPv6, then C can again query B for its
+	  time, and then can use an offline dictionary attack to determine
+	  the IPv6 address that corresponds to the digest value in the
+	  response sent by B. C could construct the necessary dictionary by
+	  compiling a list of publically accessible IPv6 servers.  Remote
+	  attackers can use this technique to identify the time sources used
+	  by a target, and then send spoofed packets to the target or its
+	  time source in order to disrupt time service as was done e.g.,
+	  in <xref target="NDSS16"></xref>
+	  or <xref target="CVE-2015-8138"></xref>.</t>
+      </section>
+
+      <section title="NOT-YOU REFID">
+	<t>NTP has been widely used through several revisions, with the
+	  latest being <xref target="RFC5905">RFC 5905</xref>.  A core
+	  component of the protocol and the algoritms is the Reference ID,
+	  or REFID, which is used to identify the source of time used for
+	  synchronization.  Traditionally, when the source of time was
+	  another system, the REFID was the IPv4 address of that other
+	  system.  If the source of time was using IPv6 for its connection,
+	  then a 4 octet digest value of the IPv6 address was used as the
+	  REFID. The purpose of the REFID is to prevent a one-degree timing
+	  loop, where if A has several timing sources that include B, if B
+	  decides to get its time from A, then A should not then decide to
+	  get its time from B.</t>
+
+	<t>Recently it was observed in <xref target="NDSS16"></xref> that a
+	  remote attacker can query a target system to learn its time source
+	  from the REFID included in target's response packet.  The remote
+	  attacker can then use this information to send spoofed packets to
+	  the target or its time source, in an attempt to disrupt time
+	  service.  The REFID thus unnecessarily leaks information about a
+	  target's time server to remote attackers.  The best way to
+	  mitigate this vulnerability is to decouple the IP address of the
+	  time source from the REFID.  To do this, a system can use an
+	  otherwise-impossible value for its REFID, called the "not-you"
+	  value, when it believes that a querying system is not its time
+	  source.</t>
+      </section>
+
+      <section title="IPv6 REFID">
+	<t><xref target="RFC5905">RFC 5905</xref>, section 7.3, "Packet
+	  Header Variables", defines the value to be used as the REFID for
+	  network associations.  It says:
+	  <list>
+	    <t>If using the IPv4 address family, the identifier is the
+	      four-octet IPv4 address.  If using the IPv6 family, it is the
+	      first four octets of the MD5 hash of the IPv6 address. ...</t>
+	  </list>
+	  Often, the REFID is simplistically and incorrectly used to
+	  identify upstream servers.  While this works in an IPv4 network,
+	  it doesn't work for IPv6 associations and may have other problems
+	  in an environment with mixed use of IPv4 and IPv6.  Specifically,
+	  the NTP Project has received a report where the generated IPv6
+	  hash decoded to the IPv4 address of a different machine on the
+	  system peer's network.</t>
+	<t>This proposal offers a way for a system to generate a REFID for a
+	  system peer that communicates over IPv6 that does not conflict
+	  with a valid IPv4-based REFID.</t>
+      </section>
+
+      <section title="Leap-Smear REFID">
+	<t><xref target="RFC5905">RFC 5905</xref> and earlier versions of
+	  NTP are the overwhelming method of distributing time on networks.
+	  Leap Seconds will continue to exist for a good number of years'
+	  time, and since the timescale mandated by POSIX effectively
+	  ignores any instances where there are not 86,400 seconds' time in
+	  a day, something must be done to reliably synchronize clocks
+	  during the application of leap second corrections.  One mechanism
+	  for dealing with the application that has recently become visible
+	  is to apply the leap second using a "smear", where the time
+	  reported by leap-second aware servers is gradually adjusted so
+	  there is no major disruption to time synchronization when
+	  processing a leap second.</t>
+
+	<t>While leap second processing can be expected to be properly
+	  handled by up-to-date software and by time servers, there are
+	  large numbers of out-of-date software installations and client
+	  systems that are just not able to properly handle a leap second
+	  correction.</t>
+
+	<t>This proposal offers a way for a system to generate a REFID that
+	  indicates that the time being supplied in the NTP packet already
+	  contains an amount of leap smear correction, and what that amount
+	  is.</t>
+      </section>
+
+      <section title="Requirements Language">
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+        document are to be interpreted as described in <xref
+        target="RFC2119">RFC 2119</xref>.</t>
+      </section>
+    </section>
+
+    <section title="The NOT-YOU REFID">
+      <section title="Proposal">
+	<t>This proposal allows the one-degree loop detection to work while
+	  keeping potentially abusable information from being disclosed to
+	  ostensibly uninterested parties.  It does this by returning the
+	  normal REFID to queries that come from an address that the current
+	  system believes is its time source (aka its "system peer"), and
+	  otherwise returning a special IP address that is interpreted to
+	  mean "not you".  The "not you" IP address is 127.127.127.127 when
+	  the query is made from an IPv4 address, or when the query is made
+	  from an IPv6 address whose four-octect hash does not equal
+	  127.127.127.127. The "not you" IP address is 127.127.127.128 when
+	  the query is made from an address whose four-octect hash equals to
+	  127.127.127.127.</t>
+
+	<t>Note that this mechanism is transparent to the party that sends
+	  timing queries.  A querying system that uses IPv4 continues to
+	  check that its IPv4 address does not appear in the REFID before
+	  deciding whether to take time from the current system.  A querying
+	  system that uses IPv6 continues to check that the four-octet hash
+	  of its IPv6 address does not appear in the REFID before deciding
+	  whether to take time from the current system.</t>
+
+	<t>This proposal will hide the current system's system peer from
+	  querying systems that the current system believes are not the
+	  current system's system peer.  Note well, however, that the
+	  current system will return the "not you" value to a query from its
+	  system peer if the system peer sends its query from an unexpected
+	  IP address.  Put another way, the responding system has imperfect
+	  knowledge about whether or not the sender is its system peer and
+	  there are cases where it will offer a NOT-YOU response to its
+	  system peer, which can produce a degree-one timing loop.</t>
+      </section>
+
+    </section>
+
+    <section title="Augmenting the IPv6 REFID Hash">
+      <section title="Background">
+	<t>When generating a REFID based on a network system peer, the NTPv4
+	  specification says:</t>
+
+        <t><list><t>If using the IPv4 address family, the identifier is the
+	      four-octet IPv4 address.  If using the IPv6 family, it is the
+	      first four octets of the MD5 hash of the IPv6
+	      address. ...</t></list></t>
+
+	<t>This means that the IPv4 representation of the IPv6 hash would
+	  be: b1.b2.b3.b4 .  The proposal is that the system MAY also use
+	  255.b2.b3.b4 as its REFID.</t>
+
+	<t>When using the REFID to check for a timing loop for an IPv6
+	  association, if the code that checks the first four-octets of the
+	  hash fails to match then the code must check again, using 0xFF as
+	  the first octet of the hash.</t>
+      </section>
+
+      <section title="Potential Problems">
+	<t>There is a 1 in 16,777,216 chance that the REFID hashes of two
+	  IPv6 addresses will be identical, producing a false-positive loop
+	  detection.  With a sufficient number of servers, the risk of this
+	  problem becomes a non-issue.  The use of the "REFID Suggestion"
+	  extension field is also a way to mitigate this potential
+	  situation.</t>
+
+	<t>Unrealistically, if only two instances of NTP are communicating
+	  via IPv6 and one side implements this new IPv4 REFID hash and the
+	  other side does not, the "other side" will not be able to detect
+	  this loop condition.  In this case, the two machines will slowly
+	  increase their Stratum until they reach S16 and become
+	  unsynchronized.  This situation is considered to be unrealistic
+	  because the only current way this could happen would be for there
+	  to only be these two instances of NTP available as time sources in
+	  a misconfigured "orphan mode" setup.  There is no risk of this
+	  happening in an NTP network with 3 or more time sources, or in a
+	  properly-configured "time island" setup.</t>
+      </section>
+
+      <section title="Questions">
+	<t>Should we ask IANA to allocate a pseudo Extension Field Type of
+	  0xFFFF (for example) so the proposed "I-Do" exchange can report
+	  whether or not the "IPv6 REFID Hash" is supported?</t>
+      </section>
+
+    </section>
+
+    <section title="The REFID sent to clients during a Leap-Smear">
+      <section title="Background">
+	<t><xref target="RFC5905">RFC 5905</xref> and earlier versions of
+	  NTP are the overwhelming method of distributing time on networks.
+	  Leap Seconds will continue to exist for a good number of years'
+	  time, and since the timescale mandated by POSIX effectively
+	  ignores any instances where there are not 86,400 seconds' time in
+	  a day, something must be done to reliably synchronize clocks
+	  during the application of leap second corrections.  One mechanism
+	  for dealing with the application that has recently become visible
+	  is to apply the leap second using a "smear", where the time
+	  reported by leap-second aware servers is gradually adjusted so
+	  there is no major disruption to time synchronization when
+	  processing a leap second.</t>
+
+	<t>While leap second processing can be expected to be properly
+	  handled by up-to-date software and by time servers, there are
+	  large numbers of out-of-date software installations and client
+	  systems that are just not able to properly handle a leap second
+	  correction.</t>
+
+	<t>This proposal offers a way for a system to generate a REFID that
+	  indicates that the time being supplied in the NTP packet already
+	  contains an amount of leap smear correction, and what that amount
+	  is.</t>
+      </section>
+
+      <section title="Leap Smear REFID">
+	<t><xref target="RFC5905">RFC 5905</xref> defines the data type of
+	  NTP time values in Section 6, "Data Types":</t>
+
+	<t><list><t>All NTP time values are represented in twos-complement
+	      format, with bits numbered in big-endian (as described in
+	      Appendix A of [RFC0791]) fashion from zero starting at the
+	      left, or high-order, position. ...</t></list></t>
+
+	<t>The 32 bit signed integer seconds portion and the 32 bit unsigned
+	    fractional seconds portion, or 32:32 format is:</t>
+
+	<t><figure title="NTP Timestamp Format (32:32)">
+            <artwork name="NTP Timestamp Format (32:32)"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                            Seconds                            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                            Fraction                           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+]]></artwork>
+	</figure></t>
+
+	<t>This format provides coverage for 136 years' time to a precision
+	  of 232 picoseconds.  If a leap-second addition is being completely
+	  smeared just before before the stroke of the next POSIX second
+	  then the smear correction will be (0,1).  If this was the only way
+	  to apply a leap smear correction then we could simply use an
+	  unsigned value to represent the correction.  But while the first
+	  popular leap smear implementation applied the correction over an
+	  appropriate number of hours' time before the actual leap second so
+	  the system time was corrected at the stroke of 00:00, that meant
+	  that the difference between system time and UTC spent half of the
+	  duration of the smear application at [.5,1) "off" of correct time.
+	  The second popular implementation of the leap smear applied the
+	  first half-second correction before the stroke of 00:00 for a
+	  correction range of (0,.5] and the last half-second correction
+	  starting at the stroke of 00:00 for a [-.5,0) correction range.
+	  This also means we need a signed value to represent the amount of
+	  correction.</t>
+
+	<t>The REFID of a system that is supplying smeared time to client
+	  requests while leap-smear correction is active would be
+	  254.b1.b2.b3, where the three octets (b1, b2, and b3) are a 2:22
+	  formatted value, yielding precision to 238 nanoseconds, or about a
+	  quarter of a microsecond.</t>
+
+	<t>Note that if an NTP server decides to offer smeared time
+	  corrections to clients, it SHOULD only offer this time in response
+	  to CLIENT time requests.  An NTP server that is offering smeared
+	  time SHOULD NOT send smeared time in any peer exchanges.  Also,
+	  CLIENT machines SHOULD NOT be distributing time (smeared or
+	  otherwise) to other systems.</t>
+
+	<t>We also note that during the application of a leap smear, the
+	  REFID from a system offering smeared time cannot provide detection
+	  of a timing loop.  This is not expected to be a problem because
+	  time server systems are not expected to make CLIENT connections
+	  with each other, so they should not be receiving smeared time.
+	  Moreso, if a time server is configured to make CLIENT connections
+	  to a server that offers smeared time, with the mechanism described
+	  here it can detect when it is getting smeared time, and either
+	  ignore time from that source, or "undo" the leap smear correction
+	  and use the corrected time for that sample.</t>
+
+	<t>This proposal is not an attempt to justify servers offering leap
+	  smeared time.  It is only an attempt to make it easy and visible
+	  to identify when a client is receiving smeared time, and provide
+	  the client to know the amount of smear correction as of the latest
+	  successful poll.</t>
+      </section>
+
+      <section title="Questions">
+	<t>Should we ask IANA to allocate a pseudo Extension Field Type of
+	  0xFFFE (for example) so the proposed "I-Do" exchange can report
+	  whether or not this server will offer leap smeared time in
+	  response to CLIENT time requests, identifying the amount of
+	  correction using the above REFID?</t>
+      </section>
+
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>The NOT-YOU REFID idea was suggested by Sharon Goldberg, who wishes
+	to acknowledge useful discussions with Aanchal Malhotra and Matthew
+	Van Gundy.</t>
+
+      <t>For the IPv6 REFID, the author wishes to acknowledge Dan Mahoney
+	(and perhaps others) for suggesting the idea of using an
+	"impossible" first-octet value to indicate an IPv6 refid hash.</t>
+
+      <t>For the Leap Smear REFID, the author wishes to acknowledge useful
+	discussions with Juergen Perlinger.</t>
+    </section>
+
+    <!-- Possibly a 'Contributors' section ... -->
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>This memo makes no requests of IANA.</t>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>NOT-YOU REFID: Many systems running NTP are configured to return
+	responses to timing queries by default. These responses contain a
+	REFID field, which generally reveals the address of the system's
+	time source if that source is an IPv4 address.  This behavior can be
+	exploited by remote attackers who wish to first learn the address of
+	a target's time source, and then attack the target and/or its time
+	source.  As such, this proposal is designed to harden NTP against
+	these attacks by limiting the amount of information leaked in the
+	REFID field.</t>
+
+    </section>
+  </middle>
+
+  <!--  *****BACK MATTER ***** -->
+
+  <back>
+    <!-- References split into informative and normative -->
+
+    <!-- There are 2 ways to insert reference entries from the citation libraries:
+     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
+     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
+        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
+
+     Both are cited textually in the same manner: by using xref elements.
+     If you use the PI option, xml2rfc will, by default, try to find included files in the same
+     directory as the including file. You can also define the XML_LIBRARY environment variable
+     with a value containing a set of directories to search.  These can be either in the local
+     filing system or remote ones accessed by http (http://domain/dir/... ).-->
+
+    <references title="Normative References">
+      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
+
+      &RFC2119;
+
+      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5905.xml"?-->
+
+      &RFC5905;
+
+    </references>
+
+    <!-- Here we use entities that we defined at the beginning. -->
+
+    <references title="Informative References">
+      <!-- &RFC3552;
+
+      &I-D.narten-iana-considerations-rfc2434bis; -->
+
+      <reference anchor="NDSS16">
+	<front>
+          <title>Attacking the Network Time Protocol</title> 
+          <author initials="A." surname="Malhotra"><organization /></author>
+          <author initials="I." surname="Cohen"><organization /></author>
+          <author initials="E." surname="Brakke"><organization /></author>
+          <author initials="S." surname="Goldberg"><organization /></author>
+          <date year="2016" />
+	</front>
+	<seriesInfo name="in" value="ISOC Network and Distributed System Security Symposium 2016 (NDSS'16)" />
+      </reference>
+
+      <reference anchor="CVE-2015-8138">
+	<front>
+          <title>Network Time Protocol Origin Timestamp Check Impersonation Vulnerability (CVE-2015-8138)</title> 
+          <author initials="M." surname="Van Gundy"><organization /></author>
+          <author initials="J." surname="Gardner"><organization /></author>
+          <date year="2016" />
+	</front>
+	<seriesInfo name="in" value="TALOS VULNERABILITY REPORT (TALOS-2016-0077)" /> 
+      </reference>
+ 
+    </references> 
+
+    <!--
+    <section anchor="app-additional" title="Additional Stuff">
+      <t>This becomes an Appendix.</t>
+    </section>
+-->
+
+    <!-- Change Log
+
+v00 2016-03-NN  HMS Initial Submission   
+                                                                                        -->
+  </back>
+</rfc>
