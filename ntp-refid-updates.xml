@@ -204,7 +204,9 @@
       </section>
 
       <section title="IPv6 REFID">
-	<t>In a trusted situation, an operator might well choose to expose
+      
+	<t>In a situation when all time queries made to a server
+      can be trusted, an operator might choose to expose
 	  the real REFID.  <xref target="RFC5905">RFC 5905</xref>, section
 	  7.3, "Packet Header Variables", explains how a remote system peer
 	  is converted to a REFID.  It says:
@@ -215,10 +217,10 @@
 	  </list>
 	  However, the MD5 hash of an IPv6 address often looks like a valid
 	  IPv4 address.  When this happens, an operator cannot tell if the
-	  REFID refers to an IPv6 address or and IPv4.  Specifically, the
+	  REFID refers to an IPv6 address or and IPv4.  (Specifically, the
 	  NTP Project has received a report where the generated IPv6 hash
 	  decoded to the IPv4 address of a different machine on the system
-	  peer's network.</t>
+	  peer's network.)</t>
 
 	<t>This proposal offers a way for a system to generate a REFID for a
 	  IPv6 system peer that does not conflict with an IPv4-based
@@ -226,10 +228,17 @@
 
 	<t>This proposal is not fully backwards-compatible. It SHOULD be
 	  implemented by both peers in an NTP association.  Having said
-	  this, however, in a properly-designed NTP network there is
-	  negligible risk of a degree-one timing loop if only one system
-	  implements and uses the IPv6 REFID.  This backward incompatability
-	  can be avoided by using the proposed I-DO protocol.</t>
+	  this, however, there is negligible risk of a degree-one timing 
+      loop if only one system implements and uses the IPv6 REFID.  
+      See <xref target="ipv6problems"></xref>.
+    </t>      
+    
+<!--  <t> This backward incompatability
+	  can also be avoided by using the proposed I-DO protocol. 
+    (SHARON: I propose cutting the above mention of I-DO and moving it
+    to the Questions section, so that this draft does not depend on I-DO.)
+    </t>-->
+
       </section>
 
       <section title="Leap-Smear REFID">
@@ -238,9 +247,9 @@
 	  Leap Seconds will continue to exist for a good number of years'
 	  time, and since the timescale mandated by POSIX effectively
 	  ignores any instances where there are not 86,400 seconds' time in
-	  a day something must be done to reliably synchronize clocks during
+	  a day, something must be done to reliably synchronize clocks during
 	  the application of leap second corrections.  One mechanism for
-	  dealing with the application that has recently become visible is
+	  deal with this is 
 	  to apply the leap second using a "smear", where the time reported
 	  by leap-second aware servers is gradually adjusted so there is no
 	  major disruption to time synchronization when processing a leap
@@ -258,7 +267,7 @@
 
 	<t>This proposal is backwards-compatible in all but poorly-designed
 	  NTP networks.  The entire point of providing NTP servers that
-	  offer leap-smeared time in response to CLIENT requests is to
+	  offer leap-smeared time in response to timing queries is to
 	  provide smooth time to clients that are unable to properly handle
 	  leap seconds.  If an operator is skilled enough to provide
 	  leap-smeared time to a subset of clients that cannot properly
@@ -298,28 +307,25 @@
 	  the query is made from an address whose four-octect hash equals
 	  127.127.127.127.</t>
 
-<!--	<t>Note that this mechanism is transparent to the party that sends
-	  timing queries.  A querying system that uses IPv4 continues to
+    <t>This mechanism is transparent to the party that sends
+	  timing queries, as long as responding NOT-YOU system can accurately
+     detect when it's getting a timing query from its system peer.  
+      A querying system that uses IPv4 continues to
 	  check that its IPv4 address does not appear in the REFID before
 	  deciding whether to take time from the current system.  A querying
 	  system that uses IPv6 continues to check that the four-octet hash
 	  of its IPv6 address does not appear in the REFID before deciding
-	  whether to take time from the current system.</t>  -->
+	  whether to take time from the current system.</t> 
 
-        <t>Note that this mechanism fully supports degree-one loop detection
-          in the case where the responding NOT-YOU system can accurately
-          detect when it's getting a request from its system peer, and
-          otherwise provides the most basic diagnostic information to third
-          parties.</t>
-
+      
 	<t>This proposal will hide the current system's system peer from
 	  querying systems that the current system believes are not the
 	  current system's system peer.  Note well, however, that the
-	  current system will return the "not you" value to a query from its
+	  current system will return the "not you" IP address to a query from its
 	  system peer if the system peer sends its query from an unexpected
 	  IP address.  Put another way, the responding system has imperfect
 	  knowledge about whether or not the sender is its system peer and
-	  there are cases where it will offer a NOT-YOU response to its
+	  there are cases where it will offer a "not you" response to its
 	  system peer, which will then produce a degree-one timing loop.</t>
       </section>
     </section>
@@ -347,22 +353,21 @@
 	  the first octet of the hash.</t>
       </section>
 
-      <section title="Potential Problems">
-	<t>There is a 1 in 16,777,216 chance that the REFID hashes of two
+      <section title="Potential Problems" anchor="ipv6problems">
+      
+	<t>There is a 1 in 16,777,216 chance that the IPv6 REFID hashes of two
 	  IPv6 addresses will be identical, producing a false-positive loop
-	  detection.  With a sufficient number of servers, the risk of this
-	  problem becomes a non-issue.  The use of the NOT-YOU REFID and/or
-	  the proposed "REFID Suggestion" or "I-DO" extension fields are
-	  ways to mitigate this potential situation.</t>
+	  detection.  </t>
 
-	<t>Unrealistically, if only two instances of NTP are communicating
-	  via IPv6 and one side implements this new IPv4 REFID hash and the
-	  other side does not, the "other side" will not be able to detect
-	  this loop condition.  In this case, the two machines will slowly
-	  increase their Stratum until they reach S16 and become
+	<t>Unrealistically, if only two systems running NTP are communicating
+	  via IPv6 and system A implements this new IPv6 REFID hash and the
+	  system B does not, then system B will not be able to detect a loop
+     condition (where system A is taking time from system B).
+       If this happens, the two systems will slowly
+	  increase their stratum until they reach stratum 16 and become
 	  unsynchronized.  This situation is considered to be unrealistic
-	  because the only current way this could happen would be for there
-	  to only be these two instances of NTP available as time sources in
+	  because, for this to happen, each system would have to have only the 
+      other system available as a time source, in
 	  a misconfigured "orphan mode" setup.  There is no risk of this
 	  happening in an NTP network with 3 or more time sources, or in a
 	  properly-configured "time island" setup.
@@ -371,9 +376,16 @@
 	  systems operate from a fixed stratum, and otherwise root distance
 	  increases.) -->
 	</t>
+
+        <t>The use of the NOT-YOU REFID (instead of the IPv6 REFID)
+        is one way to prevent such a 
+        situation from occuring.</t>
       </section>
 
       <section title="Questions">
+    <t> The problems with IPv6 REFID (i.e. introducing timing loops) could also
+    be mitigated by using the I-DO proposal. Should this draft refer to that
+    proposal? </t>
 	<t>Should we ask IANA to allocate a pseudo Extension Field Type of
 	  0xFFFF (for example) so the proposed "I-Do" exchange can report
 	  whether or not the "IPv6 REFID Hash" is supported?</t>
@@ -398,7 +410,7 @@
 
 	<t>While the proper handling of leap seconds can be expected from
 	  up-to-date software and time servers, there are large numbers of
-	  out-of-date software installations and systems that are just not
+	  out-of-date software installations and systems that are not
 	  able to properly handle a leap second correction.</t>
 
 	<t>This proposal offers a way for a system to generate a REFID that
@@ -433,11 +445,17 @@
 	<t>This format provides coverage for 136 years' time to a precision
 	  of 232 picoseconds.  If a leap-second addition is being completely
 	  smeared just before before the stroke of the next POSIX second
-	  then the smear correction will be (0,1).  If this was the only way
-	  to apply a leap smear correction then we could simply use an
-	  unsigned value to represent the correction.  But while the first
+	  then the smear correction will be (0,1). <cref source="sharon"> Harlan, 
+        I cannot understand this notation (0,1). You should either define this
+        notation to explain to the reader what it means, or give a very precise
+        citation to where this notation is define. (The former is better tho.)
+        </cref>
+      If this was the only way
+	  to apply a leap smear correction, then we could simply use an
+	  unsigned value to represent the correction.  
+      But while the first
 	  popular leap smear implementation applied the correction over an
-	  appropriate number of hours' time before the actual leap second so
+	  appropriate number of hours' time before the actual leap second, so
 	  the system time was corrected at the stroke of 00:00, that meant
 	  that the difference between system time and UTC spent half of the
 	  duration of the smear application at [.5,1) "off" of correct time.
@@ -452,14 +470,21 @@
 	  requests while leap-smear correction is active would be
 	  254.b1.b2.b3, where the three octets (b1, b2, and b3) are a 2:22
 	  formatted value, yielding precision to 238 nanoseconds, or about a
-	  quarter of a microsecond.</t>
+	  quarter of a microsecond. <cref source="sharon">Here the draft
+        should define what the client is expected to do with 
+    this information. Also, clarify exactly what information is going into the 
+    formatted value b1 b2 b3. Also, would help to explain how this value
+    captured the fact that "we need a signed value to represent the amount of
+	  correction."</cref></t>
 
 	<t>Note that if an NTP server decides to offer smeared time
 	  corrections to clients, it SHOULD only offer this time in response
 	  to CLIENT time requests.  An NTP server that is offering smeared
 	  time SHOULD NOT send smeared time in any peer exchanges.  Also,
 	  CLIENT machines SHOULD NOT be distributing time (smeared or
-	  otherwise) to other systems.</t>
+	  otherwise) to other systems. <cref source="sharon">this draft should
+        then define what it means to be a CLIENT machine.</cref>
+        </t>
 
 	<t>We also note that during the application of a leap smear, the
 	  REFID from a system offering smeared time cannot provide detection
