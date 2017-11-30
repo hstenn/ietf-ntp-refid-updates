@@ -37,7 +37,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-ntp-refid-updates-00" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-ntp-refid-updates-01" ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN" 
@@ -107,7 +107,7 @@
 
 <!-- other authors -->
 
-    <date month="November" year="2016"/>
+    <date month="November" year="2017"/>
 
     <!-- If the month and year are both specified and are the current ones,
          xml2rfc will fill in the current day for you. If only the current
@@ -138,18 +138,18 @@
 
     <abstract>
       <t><xref target="RFC5905">RFC 5905</xref>, section 7.3, "Packet Header
-      Variables", defines the value of the REFID, the system peer for the
-      responding host.  In the past, for IPv4 associations the IPv4 address
-      is used, and for IPv6 associations the first four octets of the MD5
-      hash of the IPv6 are used.  There are at least three shortcomings to
-      this approach, and this proposal will address the three so noted.  One
-      is that knowledge of the system peer is "abusable" information and
-      should not be generally available.  The second is that the four octet
-      hash of the IPv6 address looks very much like an IPv4 address, and
-      this is confusing.  The third is that a growing number of low-stratum
-      servers want to offer leap-smeared time to their clients, and there is
-      no obvious way to know if a server is offering accurate time or
-      leap-smeared time.</t>
+	Variables", defines the value of the REFID, the system peer for the
+	responding host.  In the past, for IPv4 associations the IPv4
+	address is used, and for IPv6 associations the first four octets of
+	the MD5 hash of the IPv6 are used.  There are at least three
+	shortcomings to this approach, and this proposal will address the
+	three so noted.  One is that knowledge of the system peer is
+	"abusable" information and should not be generally available.  The
+	second is that the four octet hash of the IPv6 address looks very
+	much like an IPv4 address, and this is confusing.  The third is that
+	a growing number of low-stratum servers want to offer leap-smeared
+	time to their clients, and there is no obvious way to know if a
+	server is offering accurate time or leap-smeared time.</t>
     </abstract>
   </front>
 
@@ -201,6 +201,19 @@
 	<t>The NOT-YOU REFID proposal is backwards-compatible.  It can be
 	  implemented by one peer in an NTP association without any changes
 	  to the other peer.</t>
+
+	<t>The NOT-YOU REFID proposal does have a small risk, in that a
+	  system that might return NOT-YOU does not have perfect
+	  information, and it is possible that the remote system peer is
+	  contacting "us" via a different network interface.  In this case,
+	  the remote system might choose us as their system peer, and a
+	  degree-one timing loop will occur.  In this case, however, the two
+	  systems will spiral into worse stratum positions with increasing
+	  root distances, and eventually the loop will break.  If any other
+	  systems are available as time servers, one of them will become the
+	  new system peer.  However, until this happens the two spiraling
+	  systems will have degraded time quality.</t>
+	 
       </section>
 
       <section title="IPv6 REFID">
@@ -518,11 +531,11 @@
 	these attacks by limiting the amount of information leaked in the
 	REFID field.  </t>
 
-    <t>Systems running NTP should reveal the identity of their system in
-      peer in their REFID only when they are on a trusted network.  The IPv6
-      REFID proposal provides one way to do this, when the system peer uses
-      addresses in the IPv6 family.
-    </t>
+      <t>Systems running NTP should reveal the identity of their system in
+	peer in their REFID only when they are on a trusted network.  The
+	IPv6 REFID proposal provides one way to do this, when the system
+	peer uses addresses in the IPv6 family.
+      </t>
     </section>
   </middle>
 
