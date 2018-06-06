@@ -210,8 +210,8 @@
 	  interfaces B1 and B2.  Suppose that system A is using system B as
 	  his time source, via network interface B1.  Now suppose that system B
 	  queries system A for time via network interface B2.  In this case, 
-	  system A would in that a system A returns the NOT-YOU REFID value to a 
-	  system B, since system A does not really that network interface B1 and B2
+	  system A returns the NOT-YOU REFID value to  
+	  system B, since system A does not realize that network interface B1 and B2
 	  belong to the same system.  In this case, system B might choose 
 	  system A as its time source, and a 
 	  degree-one timing loop will occur.  In this case, however, the two
