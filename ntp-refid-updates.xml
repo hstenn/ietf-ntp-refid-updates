@@ -107,7 +107,7 @@
 
 <!-- other authors -->
 
-    <date month="December" year="2017"/>
+    <date month="June" year="2018"/>
 
     <!-- If the month and year are both specified and are the current ones,
          xml2rfc will fill in the current day for you. If only the current
@@ -194,19 +194,26 @@
 	  target's time server to remote attackers.  The best way to
 	  mitigate this vulnerability is to decouple the IP address of the
 	  time source from the REFID.  To do this, a system can use an
-	  otherwise-impossible value for its REFID, called the "not-you"
+	  otherwise-impossible value for its REFID, called the NOT-YOU REFID
 	  value, when it believes that a querying system is not its time
 	  source.</t>
 
-	<t>The NOT-YOU REFID proposal is backwards-compatible.  It can be
-	  implemented by one peer in an NTP association without any changes
-	  to the other peer.</t>
+	<t>The NOT-YOU REFID proposal is backwards-compatible and 
+	  provides the most basic diagnostic information to third
+          parties.  It can be implemented by one peer in an NTP 
+	  association without any changes to the other peer.  This 
+	  holds as long as responding NOT-YOU system can accurately
+          detect when it's getting a request from its system peer.</t>
 
-	<t>The NOT-YOU REFID proposal does have a small risk, in that a
-	  system that might return NOT-YOU does not have perfect
-	  information, and it is possible that the remote system peer is
-	  contacting "us" via a different network interface.  In this case,
-	  the remote system might choose us as their system peer, and a
+	<t>The NOT-YOU REFID proposal does have a small risk. Consider system
+	  A that returns the NOT-YOU REFID and  system B that has two network 
+	  interfaces B1 and B2.  Suppose that system A is using system B as
+	  his time source, via network interface B1.  Now suppose that system B
+	  queries system A for time via network interface B2.  In this case, 
+	  system A would in that a system A returns the NOT-YOU REFID value to a 
+	  system B, since system A does not really that network interface B1 and B2
+	  belong to the same system.  In this case, system B might choose 
+	  system A as its time source, and a 
 	  degree-one timing loop will occur.  In this case, however, the two
 	  systems will spiral into worse stratum positions with increasing
 	  root distances, and eventually the loop will break.  If any other
@@ -238,7 +245,7 @@
 	  IPv6 system peer that does not conflict with an IPv4-based
 	  REFID.</t>
 
-	<t>This proposal is not fully backwards-compatible. It SHOULD be
+	<t>This proposal is not backwards-compatible. It SHOULD be
 	  implemented by both peers in an NTP association.  In the scenario
 	  where A and B are peering using IPv6, where A is the system peer
 	  and does not understand IPv6 REFID, and B is subordinate and is
@@ -259,8 +266,7 @@
 	  time, and since the timescale mandated by POSIX effectively
 	  ignores any instances where there are not 86,400 seconds' time in
 	  a day something must be done to reliably synchronize clocks during
-	  the application of leap second corrections.  One mechanism that
-	  has recently become visible to deal with the insertion of a leap
+	  the application of leap second corrections.  One way to deal with the insertion of a leap
 	  second is to apply the leap second using a "smear", where the time
 	  reported by leap-second aware servers is gradually adjusted so
 	  there is no major disruption to time synchronization when
@@ -326,8 +332,9 @@
 	  system.  A querying system that uses IPv6 continues to check that
 	  the four-octet hash of its IPv6 address does not appear in the
 	  REFID before deciding whether to take time from the current
-	  system.  However...</t>
+	  system.  </t>
 
+	<!-- SHARON: I commented this out because it repeats what is already in section 1
 	<t>Use of the NOT-YOU REFID proposal will hide the current system's
 	  system peer from querying systems that the current system believes
 	  are not the current system's system peer.  Should the current
@@ -343,7 +350,7 @@
           in the case where the responding NOT-YOU system can accurately
           detect when it's getting a request from its system peer, and
           otherwise provides the most basic diagnostic information to third
-          parties.</t>
+          parties.</t>-->
       </section>
     </section>
 
@@ -356,7 +363,7 @@
         <t><list><t>If using the IPv4 address family, the identifier is the
 	      four-octet IPv4 address.  If using the IPv6 family, it is the
 	      first four octets of the MD5 hash of the IPv6 address.
-	      ...</t></list></t>
+	</t></list></t>
 
 	<t>This means that the IPv4 representation of the IPv6 hash would
 	  be: b1.b2.b3.b4 .  The proposal is that the system MAY also use
@@ -383,7 +390,7 @@
 	  via IPv6 and system A implements this new IPv6 REFID hash and
 	  system B does not, system B will not be able to detect this loop
 	  condition.  In this case, the two machines will slowly increase
-	  their Stratum until they reach S16 and become unsynchronized.
+	  their stratum until they become unsynchronized.
 	  This situation is considered to be unrealistic because, for this
 	  to happen, each system would have to have only the other system
 	  available as a time source, for example, in a misconfigured
@@ -410,10 +417,8 @@
 
     <section title="The REFID sent to clients during a Leap-Smear">
       <section title="Background">
-	<t><xref target="RFC5905">RFC 5905</xref> and earlier versions of
-	  NTP are the overwhelming method of distributing time on networks.
-	  Leap Seconds will continue to exist for a good number of years'
-	  time, and since the timescale mandated by POSIX effectively
+	<!-- Commented this out because it repeats section 1.
+	  <t>Since the timescale mandated by POSIX effectively
 	  ignores any instances where there are not 86,400 seconds' time in
 	  a day, something must be done to reliably synchronize clocks
 	  during the application of leap second corrections.  One mechanism
@@ -426,7 +431,7 @@
 	<t>While the proper handling of leap seconds can be expected from
 	  up-to-date software and time servers, there are large numbers of
 	  out-of-date software installations and systems that are not able
-	  to properly handle a leap second correction.</t>
+	  to properly handle a leap second correction.</t>-->
 
 	<t>This proposal offers a way for a system to generate a REFID that
 	  indicates that the time being supplied in the NTP packet already
@@ -488,6 +493,9 @@
 	<t>[How should we cite the 2:22 notation?  This is the
 	  same general format that we use for NTP timestamps.]</t>
 
+	<t>[Sharon says: I suggest adding a concrete example of the scheme,
+		so that the above paragraph is easier to understand.]</t>
+	      
 	<t>The client is not expected to do anything with this information.
 	  Indeed, the whole point of offering smeared time is that there is
 	  reason to believe the clients are unable to properly handle a leap
@@ -505,12 +513,20 @@
 	  time SHOULD NOT send smeared time in any peer exchanges.  Also,
 	  system that sync their time via CLIENT requests SHOULD NOT be
 	  distributing time (smeared or otherwise) to other systems.</t>
+	      
+	<t>[Sharon asks: Consider a client that doesn't know he is getting
+	smeared time (b\c he is outdated etc). How is a this client supposed 
+	to know that he should not be distributing smeared time?  
+	Note that its perfectly normal for a stratum 2 server that gets his
+	time via CLIENT requests from a stratum 1 server to then offer time
+	to stratum 3 systems.]</t>
 
 	<t>We also note that during the application of a leap smear, the
 	  REFID from a system offering smeared time cannot provide detection
 	  of a timing loop.  This is not expected to be a problem because
 	  time server systems are not expected to make CLIENT connections
 	  with each other, so they should not be receiving smeared time.
+	  [Sharon asks: I don't understand this point, see my question above.]
 	  Moreso, if a time server is configured to make CLIENT connections
 	  to a server that offers smeared time, with the mechanism described
 	  here it can detect when it is getting smeared time, and either
@@ -559,7 +575,7 @@
 	that source is an IPv4 address.  This behavior can be exploited by
 	remote attackers who wish to first learn the address of a target's
 	time source, and then attack the target and/or its time source.  As
-	such, the "not-you" REFID proposal is designed to harden NTP against
+	such, the NOT-YOU REFID proposal is designed to harden NTP against
 	these attacks by limiting the amount of information leaked in the
 	REFID field.  </t>
 
