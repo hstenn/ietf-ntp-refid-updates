@@ -1,7 +1,6 @@
 # NTP refid updates:
 # - NTP IPv6 refid change
 # - NTP Not-You REFID proposal
-# - NTP leap-smear refid change
 
 If you want to see how the document looks when submitted to xml2rfc.tools.ietf.org, just click this link:
 
