@@ -168,23 +168,24 @@
 	  queries B for its time, then A will learn that B is using A as its
 	  time source by observing A's address in the REFID field of the
 	  response packet sent by B.  Thus, A will not select B as a
-	  potential time source, since this would cause a timing loop.</t>
+	  potential time source, as this would cause a timing loop.</t>
       </section>
 
       <section title="NOT-YOU REFID">
-	<t>This REFID mechanism, however, also allows a third-party C to
-	  learn that A is the time source that is being used by B.  When A
-	  is using IPv4, C can learn this by querying B for its time, and
-	  observing that the REFID in B's response is the IPv4 address of A.
-	  Meanwhile, when A is using IPv6, then C can again query B for its
-	  time, and then can use an offline dictionary attack to attempt to
-	  determine the IPv6 address that corresponds to the digest value in
-	  the response sent by B.  C could construct the necessary
-	  dictionary by compiling a list of publicly accessible IPv6
-	  servers.  Remote attackers can use this technique to attempt to
-	  identify the time sources used by a target, and then send spoofed
-	  packets to the target or its time source in an attempt to disrupt
-	  time service, as was done e.g., in <xref target="NDSS16"></xref>
+	<t>The traditional REFID mechanism, however, also allows a
+	  third-party C to learn that A is the time source that is being
+	  used by B.  When A is using IPv4, C can learn this by querying B
+	  for its time, and observing that the REFID in B's response is the
+	  IPv4 address of A.  Meanwhile, when A is using IPv6, then C can
+	  again query B for its time, and then can use an offline dictionary
+	  attack to attempt to determine the IPv6 address that corresponds
+	  to the digest value in the response sent by B.  C could construct
+	  the necessary dictionary by compiling a list of publicly
+	  accessible IPv6 servers.  Remote attackers can use this technique
+	  to attempt to identify the time sources used by a target, and then
+	  send spoofed packets to the target or its time source in an
+	  attempt to disrupt time service, as was done e.g.,
+	  in <xref target="NDSS16"></xref>
 	  or <xref target="CVE-2015-8138"></xref>.</t>
       
 	<t>The REFID thus unnecessarily leaks information about a
@@ -207,9 +208,9 @@
 	  timing loop will occur.  In this case, however, the two systems
 	  will spiral into worsening stratum positions with increasing root
 	  distances, and eventually the loop will break.  If any other
-	  systems are available as time servers, one of them will become the
-	  new system peer.  However, until this happens the two spiraling
-	  systems will have degraded time quality.</t>
+	  systems are available as time servers, one of them may become the
+	  new system peer.  However, unless or until this happens the two
+	  spiraling systems will have degraded time quality.</t>
 	 
       </section>
 
