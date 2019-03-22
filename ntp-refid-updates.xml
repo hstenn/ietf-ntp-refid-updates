@@ -2,16 +2,16 @@
 <!-- This template is for creating an Internet Draft using xml2rfc,
      which is available here: http://xml.resource.org. -->
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
-<!-- One method to get references from the online citation libraries.
-     There has to be one entity for each item to be referenced. 
-     An alternate method (rfc include) is described in the references. -->
-<!ENTITY RFC5905 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5905.xml">
-<!ENTITY RFC2827 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2827.xml">
-<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC2434 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2434.xml">
-<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
-<!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
-]>
+	  <!-- One method to get references from the online citation libraries.
+	       There has to be one entity for each item to be referenced. 
+	       An alternate method (rfc include) is described in the references. -->
+	  <!ENTITY RFC5905 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5905.xml">
+	  <!ENTITY RFC2827 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2827.xml">
+	  <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+	  <!ENTITY RFC2434 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2434.xml">
+	  <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+	  <!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
+	  ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
 <!-- For a complete list and description of processing instructions (PIs), 
@@ -37,12 +37,11 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-ntp-refid-updates-04" ipr="trust200902">
-
+<rfc category="std" docName="draft-ietf-ntp-refid-updates-05" ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
-     ipr values: full3667, noModification3667, noDerivatives3667
-     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
-     they will automatically be output with "(if approved)" -->
+       ipr values: full3667, noModification3667, noDerivatives3667
+       you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+       they will automatically be output with "(if approved)" -->
 
   <!-- ***** FRONT MATTER ***** -->
 
@@ -51,7 +50,7 @@
          full title is longer than 39 characters -->
 
     <title abbrev="Network Time Protocol REFID Updates">Network Time
-    Protocol REFID Updates</title>
+      Protocol REFID Updates</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
@@ -106,9 +105,9 @@
       </address>
     </author>
 
-<!-- other authors -->
+    <!-- other authors -->
 
-    <date year="2018"/>
+    <date year="2019"/>
 
     <!-- If the month and year are both specified and are the current ones,
          xml2rfc will fill in the current day for you. If only the current
@@ -160,7 +159,7 @@
 	  NTP Protocol is to prevent a degree-one timing loop, where server
 	  B decides to follow A as its time source, and A then decides to
 	  follow B as its time source.</t>
-      
+	
 	<t>At Stratum 2+, which will be the case if two servers A and B are
 	  exchanging timing information, then if server B follows A as its
 	  time source, A's address will be B's REFID.  When A uses IPv4, the
@@ -188,7 +187,7 @@
 	  attempt to disrupt time service, as was done e.g.,
 	  in <xref target="NDSS16"></xref>
 	  or <xref target="CVE-2015-8138"></xref>.</t>
-      
+	
 	<t>The REFID thus unnecessarily leaks information about a
 	  target's time server to remote attackers.  The best way to
 	  mitigate this vulnerability is to decouple the IP address of the
@@ -204,21 +203,21 @@
 	  holds as long as responding NOT-YOU system can accurately
           detect when it's getting a request from its system peer.</t>
 
-	<t>The NOT-YOU REFID proposal does have a small risk. Consider system
-	  A that returns the NOT-YOU REFID and  system B that has two network 
-	  interfaces B1 and B2.  Suppose that system A is using system B as
-	  his time source, via network interface B1.  Now suppose that system B
-	  queries system A for time via network interface B2.  In this case, 
-	  system A returns the NOT-YOU REFID value to  
-	  system B, since system A does not realize that network interface B1 and B2
-	  belong to the same system.  In this case, system B might choose 
-	  system A as its time source, and a 
+	<t>The NOT-YOU REFID proposal does have a small risk. Consider
+	  system A that returns the NOT-YOU REFID and system B that has two
+	  network interfaces B1 and B2.  Suppose that system A is using
+	  system B as his time source, via network interface B1.  Now
+	  suppose that system B queries system A for time via network
+	  interface B2.  In this case, system A returns the NOT-YOU REFID
+	  value to system B, since system A does not realize that network
+	  interface B1 and B2 belong to the same system.  In this case,
+	  system B might choose system A as its time source, and a
 	  degree-one timing loop will occur.  In this case, however, the two
-	  systems will spiral into degrading stratum positions with increasing
-	  root distances, and eventually the loop will break.  If any other
-	  systems are available as time servers, one of them will become the
-	  new system peer.  However, unless or until this happens the two spiraling
-	  systems will have degraded time quality.</t>
+	  systems will spiral into degrading stratum positions with
+	  increasing root distances, and eventually the loop will break.  If
+	  any other systems are available as time servers, one of them will
+	  become the new system peer.  However, unless or until this happens
+	  the two spiraling systems will have degraded time quality.</t>
 	 
       </section>
 
@@ -254,15 +253,16 @@
 	<t>If both peers implement the IPv6 REFID this situation cannot
 	  happen.</t>
 
-	<t>[If at least one of the peers implements the proposed I-DO
-	  protocol this situation cannot happen.]</t>
+	<t>If at least one of the peers implements the
+	  proposed <xref target="DRAFT-I-DO">I-DO</xref> protocol this
+	  situation cannot happen.</t>
       </section>
 
       <section title="Requirements Language">
-        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-        document are to be interpreted as described in <xref
-        target="RFC2119">RFC 2119</xref>.</t>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+          NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+          in this document are to be interpreted as described
+          in <xref target="RFC2119">RFC 2119</xref>.</t>
       </section>
     </section>
 
@@ -340,31 +340,28 @@
 	<t>There is a 1 in 16,777,216 chance that the REFID hashes of two
 	  IPv6 addresses will be identical, producing a false-positive loop
 	  detection.  With a sufficient number of servers, the risk of this
-	  problem becomes a non-issue.  [The use of the NOT-YOU REFID and/or
-	  the proposed "REFID Suggestion" or "I-DO" extension fields are
-	  ways to mitigate this potential situation.]</t>
+	  problem becomes a non-issue.  The use of the NOT-YOU REFID and/or
+	  the
+	  proposed <xref target="DRAFT-REFID-SUGGESTION">REFID-SUGGESTION</xref>
+	  or <xref target="DRAFT-I-DO">I-DO</xref> extension fields are ways
+	  to mitigate this potential situation.</t>
 
 	<t>Unrealistically, if only two instances of NTP are communicating
 	  via IPv6 and system A implements this new IPv6 REFID hash and
 	  system B does not, system B will not be able to detect this loop
 	  condition.  In this case, the two machines will slowly increase
-	  their stratum until they become unsynchronized.
-	  This situation is considered to be unrealistic because, for this
-	  to happen, each system would have to have only the other system
-	  available as a time source, for example, in a misconfigured
-	  "orphan mode" setup.  There is no risk of this happening in an NTP
-	  network with 3 or more time sources, or in a properly-configured
-	  "time island" setup.
+	  their stratum until they become unsynchronized.  This situation is
+	  considered to be unrealistic because, for this to happen, each
+	  system would have to have only the other system available as a
+	  time source, for example, in a misconfigured "orphan mode" setup.
+	  There is no risk of this happening in an NTP network with 3 or
+	  more time sources, or in a properly-configured "time island"
+	  setup.
 	  <!-- (SHARON: Is this true?  I thought stratum is not used to
-	  choose sys peer anymore?)  (HMS: I believe so, as orphan mode
-	  systems operate from a fixed stratum, and otherwise root distance
-	  increases.) -->
+	       choose sys peer anymore?)  (HMS: I believe so, as orphan mode
+	       systems operate from a fixed stratum, and otherwise root distance
+	       increases.) -->
 	</t>
-      </section>
-
-      <section title="Questions">
-	<t>Should we reference the REFID Suggestion and I-DO proposals
-	here?</t>
       </section>
 
     </section>
@@ -411,15 +408,15 @@
     <!-- References split into informative and normative -->
 
     <!-- There are 2 ways to insert reference entries from the citation libraries:
-     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
-     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
-        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
+	 1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
+	 2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
+         (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
 
-     Both are cited textually in the same manner: by using xref elements.
-     If you use the PI option, xml2rfc will, by default, try to find included files in the same
-     directory as the including file. You can also define the XML_LIBRARY environment variable
-     with a value containing a set of directories to search.  These can be either in the local
-     filing system or remote ones accessed by http (http://domain/dir/... ).-->
+	 Both are cited textually in the same manner: by using xref elements.
+	 If you use the PI option, xml2rfc will, by default, try to find included files in the same
+	 directory as the including file. You can also define the XML_LIBRARY environment variable
+	 with a value containing a set of directories to search.  These can be either in the local
+	 filing system or remote ones accessed by http (http://domain/dir/... ).-->
 
     <references title="Normative References">
       <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
@@ -437,7 +434,31 @@
     <references title="Informative References">
       <!-- &RFC3552;
 
-      &I-D.narten-iana-considerations-rfc2434bis; -->
+	   &I-D.narten-iana-considerations-rfc2434bis; -->
+
+      <reference anchor="NTP-EXTENSION-FIELD">
+	<front>
+	  <title>draft-stenn-ntp-extension-fields</title>
+	  <author initials="H." surname="Stenn"><organization /></author>
+	  <date year="2018" />
+	</front>
+      </reference>
+
+      <reference anchor="DRAFT-REFID-SUGGESTION">
+	<front>
+	  <title>draft-stenn-ntp-suggest-refid</title>
+	  <author initials="H." surname="Stenn"><organization /></author>
+	  <date year="2018" />
+	</front>
+      </reference>
+
+      <reference anchor="DRAFT-I-DO">
+	<front>
+	  <title>draft-stenn-ntp-i-do</title>
+	  <author initials="H." surname="Stenn"><organization /></author>
+	  <date year="2018" />
+	</front>
+      </reference>
 
       <reference anchor="NDSS16">
 	<front>
@@ -460,21 +481,21 @@
 	</front>
 	<seriesInfo name="in" value="TALOS VULNERABILITY REPORT (TALOS-2016-0077)" /> 
       </reference>
- 
+      
     </references> 
 
     <!--
-    <section anchor="app-additional" title="Additional Stuff">
-      <t>This becomes an Appendix.</t>
-    </section>
--->
+	<section anchor="app-additional" title="Additional Stuff">
+	  <t>This becomes an Appendix.</t>
+	</section>
+	-->
 
     <!-- Change Log
 
-    2016-10-23  HMS Initial version
-    2016-10-27  SG Updates
-    2016-10-29  HMS Updates
-v00
-                                                                                        -->
+	 2016-10-23  HMS Initial version
+	 2016-10-27  SG Updates
+	 2016-10-29  HMS Updates
+	 v00
+      -->
   </back>
 </rfc>
